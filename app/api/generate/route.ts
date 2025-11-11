@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
@@ -8,8 +8,8 @@ export async function POST(req: Request) {
   const prompt = `You are a helpful assistant. Summarize this profile in ${language}.`;
 
   const completion = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }],
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: prompt }],
   });
 
   return NextResponse.json({

@@ -1,15 +1,15 @@
-"use client";
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
 
 export default function Home() {
-  const [profile, setProfile] = useState("");
-  const [result, setResult] = useState("");
+  const [profile, setProfile] = useState('');
+  const [result, setResult] = useState('');
 
   const handleGenerate = async () => {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mode: "summary", profile, job: "", language: "English" }),
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: 'summary', profile, job: '', language: 'English' }),
     });
     const data = await res.json();
     setResult(data.result);
