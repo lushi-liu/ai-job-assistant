@@ -1,18 +1,36 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(req: Request) {
-  const { mode, profile, job, language } = await req.json();
-  const prompt = `You are a helpful assistant. Summarize this profile in ${language}.`;
+  try {
+    const { mode, profile, job, language } = await req.json();
 
-  const completion = await client.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }],
-  });
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        { error: 'Missing OPENAI_API_KEY on server' },
+        { status: 500 }
+      );
+    }
 
-  return NextResponse.json({
-    result: completion.choices[0].message.content,
-  });
+    const prompt = `Summarize this profile in ${language}:\n${profile}`;
+
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    const result = completion.choices[0].message.content ?? '';
+
+    return NextResponse.json({ result }, { status: 200 });
+  } catch (err: unknown) {
+    console.error('API error:', err);
+    return NextResponse.json(
+      { error: 'Something went wrong in the API route' },
+      { status: 500 }
+    );
+  }
 }
